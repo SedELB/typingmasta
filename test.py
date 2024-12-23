@@ -10,3 +10,4 @@ for _ in range(5):
 
 print(sample_text)
 print(len(sample_text))
+print('allo')
