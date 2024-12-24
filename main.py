@@ -1,21 +1,65 @@
 # main.py file
 import tkinter as tk
 from wonderwords import RandomSentence
+from time import time
 
 s = RandomSentence()
 # Texte
 sample_text = ""
-for phrase in range(5):
+for phrase in range(1):
     sample_text += s.sentence() + ' '
 typed_text = ""
 index = 0
+timer_started = False
+start_time = 0
+end_time = 0
+numberofchars = len(sample_text) 
+wpm = 0
+accuracy = numberofchars
+
+# Construction du window
+root = tk.Tk()
+root.title("Typing Masta")
+
+
+def reset(): # permet de reset le test
+    global index
+    index = 0
+    text_widget.delete("1.0", tk.END) # supprime le texte écrit
+    text_widget.insert("1.0", sample_text) # réinsère le texte
+    text_widget.tag_remove("correct", "1.0", tk.END)
+    text_widget.tag_remove("incorrect", "1.0", tk.END)
+
+
+def ecrandefin():
+    fin = tk.Toplevel(root)
+    fin.title("Fin de la partie")
+    fin.geometry("300x200")
+    fin.focus_force()
+    tk.Label(
+        fin,
+        text=(
+            f"Waza! Vous avez terminé le test. \n"
+            f"Mots par minute : {wpm}\n"
+            f"Précision : {accuracy}% \n"
+            f"Temps écoulé : {end_time - start_time:.2f} seconds"
+        )
+    ).pack(pady=20)
+
+
 
 def on_key(event):
-    global index, typed_text # Permet de modifier la variable "index" en tant que variable global
+    global index, typed_text, start_time, end_time, timer_started, wpm, accuracy
+
     if index >= len(sample_text):
         return  # permet de ne pas dépasser la phrase
     
+    if timer_started == False and index == 1: # permet de commencer le timer
+        timer_started = True
+        start_time = time()
+
     ignored_keys = {"Shift_L", "Shift_R", "Tab", "Caps_Lock", "Alt_L", "Alt_R", "Control_L", "Control_R"}
+
     if event.keysym in ignored_keys:
         return # ignore les press autre que les lettres, chiffres, etc.
     
@@ -38,29 +82,29 @@ def on_key(event):
         # On attribut "correct" si ==, avec comme range(index, index+1). Fonctionnement: rangée.colonne
         # exemple: 1.0 = indice 0 dans le sample
         text_widget.tag_add("correct", f"1.{index}", f"1.{index + 1}")
+        
+        if index == len(sample_text) - 2: # for some reason, la longueur du texte a deux chars de trop.
+            end_time = time() # arrête le timer
+            wpm = round( (numberofchars / 5) / ((end_time - start_time) / 60), 1) # selon la formule du Gross WPM
+            
+            for i in range(index):
+                if 'incorrect' in text_widget.tag_names(f"1.{i}"): # pour chaque index dans la phrase, si il y a une lettre incorrecte, enlever 1 de la précision.
+                    accuracy -= 1
+            accuracy = round(accuracy / numberofchars * 100, 1)
 
-    elif typed_char == sample_text[index] and typed_char == " ":
-        pass
+            ecrandefin() # affiche l'écran de fin
+            return
 
     else:
         # On attribut "incorrect" si !=, avec comme range(index, index+1). Fonctionnement: rangée.colonne
         text_widget.tag_add("incorrect", f"1.{index}", f"1.{index + 1}")
 
-    typed_text += typed_char
+
     index += 1  # recommence au next indice
-    count = 0
 
-def reset(): # permet de reset le test
-    global index
-    index = 0
-    text_widget.delete("1.0", tk.END) # supprime le texte écrit
-    text_widget.insert("1.0", sample_text) # réinsère le texte
-    text_widget.tag_remove("correct", "1.0", tk.END)
-    text_widget.tag_remove("incorrect", "1.0", tk.END)
 
-# Construction du window
-root = tk.Tk()
-root.title("Typing Masta")
+
+
 
 # Esthétique du message
 text_widget = tk.Text(root, height=5, width=50, font=("Arial", 16), wrap="word")
