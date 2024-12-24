@@ -6,13 +6,12 @@ s = RandomSentence()
 # Texte
 sample_text = ""
 for phrase in range(5):
-    sample_text += s.sentence() + '\n'
-
+    sample_text += s.sentence() + ' '
+typed_text = ""
 index = 0
-no_phrase = 1
 
 def on_key(event):
-    global index # Permet de modifier la variable "index" en tant que variable global
+    global index, typed_text # Permet de modifier la variable "index" en tant que variable global
     if index >= len(sample_text):
         return  # permet de ne pas dépasser la phrase
     
@@ -21,22 +20,35 @@ def on_key(event):
         return # ignore les press autre que les lettres, chiffres, etc.
     
     if index > 0 and event.keysym == "BackSpace":
-        index -= 1
-        # recule de 1
-        text_widget.tag_remove("correct", f"{no_phrase}.{index}", f"{no_phrase}.{index + 1}")
-        text_widget.tag_remove("incorrect", f"{no_phrase}.{index}", f"{no_phrase}.{index + 1}")
-        return # supprime la couleur
+        all_correct = True
+        for i in range(index): # pour chaque lettre dans la phrase jusqu<à l'index:
+            if 'incorrect' in text_widget.tag_names(f"1.{i}"): # si il y a une lettre incorrecte:
+                all_correct = False
+                break
+
+        if not all_correct: # si il y a une lettre incorrecte dans le texte precedent,
+            index -= 1 # on peut backspace pour supprimer la lettre.
+            # recule de 1
+            text_widget.tag_remove("correct", f"1.{index}", f"1.{index + 1}")
+            text_widget.tag_remove("incorrect", f"1.{index}", f"1.{index + 1}")
+        return
     
     typed_char = event.char  # défini chaque press
     if typed_char == sample_text[index]:  # vérifie si le caractère est le même que le sample
         # On attribut "correct" si ==, avec comme range(index, index+1). Fonctionnement: rangée.colonne
         # exemple: 1.0 = indice 0 dans le sample
-        text_widget.tag_add("correct", f"{no_phrase}.{index}", f"{no_phrase}.{index + 1}")
+        text_widget.tag_add("correct", f"1.{index}", f"1.{index + 1}")
+
+    elif typed_char == sample_text[index] and typed_char == " ":
+        pass
+
     else:
         # On attribut "incorrect" si !=, avec comme range(index, index+1). Fonctionnement: rangée.colonne
-        text_widget.tag_add("incorrect", f"{no_phrase}.{index}", f"{no_phrase}.{index + 1}")
+        text_widget.tag_add("incorrect", f"1.{index}", f"1.{index + 1}")
 
+    typed_text += typed_char
     index += 1  # recommence au next indice
+    count = 0
 
 def reset(): # permet de reset le test
     global index
