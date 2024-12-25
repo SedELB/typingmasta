@@ -5,9 +5,28 @@ from time import time
 
 s = RandomSentence()
 # Texte
-sample_text = ""
-for phrase in range(1):
-    sample_text += s.sentence() + ' '
+def texte():
+    text = ""
+    for phrase in range(1):
+        text += s.sentence()
+    return text
+
+def texte_suivant():
+    # réinitialiser tout, donc texte_suivant est en quelque sorte aussi un reset
+    global sample_text, index, numberofchars, accuracy
+    sample_text = texte()
+    index = 0
+    numberofchars = len(sample_text)
+    accuracy = numberofchars
+
+    text_widget.config(state="normal")  # Permettre les modifications
+    text_widget.delete("1.0", tk.END)  # Supprimer le texte précédent
+    text_widget.insert("1.0", sample_text)  # Insérer le nouveau texte
+    text_widget.tag_remove("correct", "1.0", tk.END)  # Supprimer les tags "correct"
+    text_widget.tag_remove("incorrect", "1.0", tk.END)  # Supprimer les tags "incorrect"
+    text_widget.config(state="disabled")  # Désactiver l'édition du texte
+
+sample_text = texte()
 typed_text = ""
 index = 0
 timer_started = False
@@ -45,8 +64,8 @@ def ecrandefin():
             f"Temps écoulé : {end_time - start_time:.2f} seconds"
         )
     ).pack(pady=20)
-    tk.Button(fin, text="reset", command=lambda: (reset(), fin.destroy())).pack() # implémentation du bouton reset
-
+    tk.Button(fin, text="reset", command=lambda: (reset(), fin.destroy())).pack(side=tk.LEFT, fill=tk.X, padx=75) # implémentation du bouton reset
+    tk.Button(fin, text="next", command=lambda: (texte_suivant(), fin.destroy())).pack(side=tk.LEFT, fill=tk.X) # implémentation du bouton next
 
 def on_key(event):
     global index, typed_text, start_time, end_time, timer_started, wpm, accuracy
@@ -83,7 +102,7 @@ def on_key(event):
         # exemple: 1.0 = indice 0 dans le sample
         text_widget.tag_add("correct", f"1.{index}", f"1.{index + 1}")
         
-        if index == len(sample_text) - 2: # for some reason, la longueur du texte a deux chars de trop.
+        if index == len(sample_text) - 1: # for some reason, la longueur du texte a 1 char de trop.
             end_time = time() # arrête le timer
             wpm = round( (numberofchars / 5) / ((end_time - start_time) / 60), 1) # selon la formule du Gross WPM
             
@@ -101,9 +120,6 @@ def on_key(event):
 
 
     index += 1  # recommence au next indice
-
-
-
 
 
 # Esthétique du message
