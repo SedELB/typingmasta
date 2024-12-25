@@ -45,7 +45,7 @@ def ecrandefin():
             f"Temps écoulé : {end_time - start_time:.2f} seconds"
         )
     ).pack(pady=20)
-
+    tk.Button(fin, text="reset", command=lambda: (reset(), fin.destroy())).pack() # implémentation du bouton reset
 
 
 def on_key(event):
