@@ -8,7 +8,7 @@ s = RandomSentence()
 def texte():
     text = ""
     for phrase in range(1):
-        text += s.sentence()
+        text += s.sentence() + ' '
     return text
 
 def texte_suivant():
@@ -42,14 +42,15 @@ root.title("Typing Masta")
 
 
 def reset(): # permet de reset le test
-    global index
+    global index, numberofchars, accuracy
     index = 0
     text_widget.delete("1.0", tk.END) # supprime le texte écrit
     text_widget.insert("1.0", sample_text) # réinsère le texte
     text_widget.tag_remove("correct", "1.0", tk.END)
     text_widget.tag_remove("incorrect", "1.0", tk.END)
-
-
+    numberofchars = len(sample_text)
+    accuracy = numberofchars
+    
 def ecrandefin():
     fin = tk.Toplevel(root)
     fin.title("Fin de la partie")
@@ -102,7 +103,7 @@ def on_key(event):
         # exemple: 1.0 = indice 0 dans le sample
         text_widget.tag_add("correct", f"1.{index}", f"1.{index + 1}")
         
-        if index == len(sample_text) - 1: # for some reason, la longueur du texte a 1 char de trop.
+        if index == len(sample_text) - 2: # for some reason, la longueur du texte a 1 char de trop.
             end_time = time() # arrête le timer
             wpm = round( (numberofchars / 5) / ((end_time - start_time) / 60), 1) # selon la formule du Gross WPM
             
