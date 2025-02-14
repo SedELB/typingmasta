@@ -18,7 +18,7 @@ Make sure you have **Python 3.x** installed on your system.
 ### 2️⃣ Install the project  
 Clone the repository and install dependencies:  
 ```bash
-git clone https://github.com/your-username/TypingMasta.git
+git clone https://github.com/SedELB/TypingMasta.git
 cd TypingMasta
 pip install tkinter
 pip install wonderwords
