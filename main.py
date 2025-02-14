@@ -60,11 +60,10 @@ def setup_text_widget(text_function):
     text_widget.tag_config("incorrect", foreground="red")
     
     # Boutons back et reset
-    backbtn = tk.Button(mainframe, text="Retour", command=mainmenu)
+    backbtn = tk.Button(mainframe, text="Back", command=mainmenu)
     backbtn.pack(pady=10)
     resetbtn = tk.Button(mainframe, text="Reset", command=reset)
     resetbtn.pack(pady=10)
-    
     root.bind("<KeyRelease>", on_key)
 
 def texte_suivant():
@@ -101,7 +100,7 @@ root.geometry("800x600")
 root.iconbitmap("typingmasta/tlogo.ico") # changer le logo
 titlelabel = tk.Label(root, text="Typing Masta", font=("Arial", 24))
 titlelabel.pack(pady=10)
-subtitle = tk.Label(root, text="Testez votre vitesse de frappe!", font=("Arial", 16))
+subtitle = tk.Label(root, text="Test your typing speed!", font=("Arial", 16))
 subtitle.pack(pady=10)
 mainframe = tk.Frame(root)
 mainframe.pack(pady=10)
@@ -112,10 +111,10 @@ def clear():
 
 def mainmenu():
     clear()
-    easybtn = tk.Button(mainframe, command=easy, text="Facile", font=("Arial", 16), width=10, height=2, bg="green", fg="white")
-    mediumbtn = tk.Button(mainframe, command=medium, text="Moyen", font=("Arial", 16), width=10, height=2, bg="orange", fg="white")
-    hardbtn = tk.Button(mainframe, command=hard, text="Difficile", font=("Arial", 16), width=10, height=2, bg="red", fg="white")
-    quitbtn = tk.Button(mainframe, text="Quitter", command=root.quit, font=("Arial", 16), width=10, height=2, bg="black", fg="white")
+    easybtn = tk.Button(mainframe, command=easy, text="Easy", font=("Arial", 16), width=10, height=2, bg="green", fg="white")
+    mediumbtn = tk.Button(mainframe, command=medium, text="Intermediate", font=("Arial", 16), width=10, height=2, bg="orange", fg="white")
+    hardbtn = tk.Button(mainframe, command=hard, text="Hard", font=("Arial", 16), width=10, height=2, bg="red", fg="white")
+    quitbtn = tk.Button(mainframe, text="Quit", command=root.quit, font=("Arial", 16), width=10, height=2, bg="black", fg="white")
     easybtn.pack(pady=10)
     mediumbtn.pack(pady=10)
     hardbtn.pack(pady=10)
